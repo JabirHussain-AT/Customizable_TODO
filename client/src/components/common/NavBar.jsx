@@ -1,36 +1,52 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
-import Logo from "../../assets/NavBar/Logo.png";
-import SettingsIcon from "../../assets/NavBar/SettingsIcon.png";
-import NotificationIcon from "../../assets/NavBar/NotificationIcon.png";
+import Logo from "../../assets/Logo.png";
+import { CiSettings } from "react-icons/ci";
+import { FiSun, FiMoon } from 'react-icons/fi'; // Import the moon icon
+import ThemeToggle from "../common/ThemeToggle";
+import ThemeContext from "../../context/ThemeContext";
 
 const NavBar = () => {
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { theme } = useContext(ThemeContext); 
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   return (
-    // navbar section
-    <div className=" w-full bg-white min-h-8 flex justify-between">
+    <div className="w-full bg-white dark:bg-gray-800 min-h-8 flex justify-between items-center px-4">
       {/* Logo Section */}
       <NavLink to="/">
-        <img className="w-32 m-5 " src={Logo} alt="Logo" />
+        <img className="w-32 m-auto" src={Logo} alt="Logo" />
       </NavLink>
 
-      {/* Icon section */}
-      <div className=" flex justify-center items-center ">
+      {/* Icon and Dropdown Section */}
+      <div className="flex justify-center items-center relative">
+        {/* Settings Icon */}
         <NavLink to="/view/settings">
-          <img
-            className="w-7 h-7 m-3 cursor-pointer hover:scale-110 duration-300 "
-            src={SettingsIcon}
-            alt="Settings"
-            title="Settings"
-          />
+          <CiSettings className="text-2xl md:text-3xl mr-3  hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full duration-200 dark:text-white" />
         </NavLink>
-        <NavLink to="/Notifications">
-          <img
-            className="w-7 h-7 mr-6 ml-2 cursor-pointer hover:scale-110 duration-300"
-            src={NotificationIcon}
-            alt="Notifications"
-            title="Notifications"
-          />
-        </NavLink>
+
+        {/* Theme Selection Dropdown */}
+        <div className="relative ">
+          <button
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+            onClick={toggleDropdown}
+          >
+            {theme === 'light' && <FiSun className="text-xl md:text-2xl dark:text-white" />}
+            {theme === 'dark' && <FiMoon className="text-xl md:text-2xl text-yellow-400" />} {/* Moon for dark mode */}
+            {theme === 'system' && <FiSun className="text-xl md:text-2xl dark:text-white" />} {/* System default */}
+          </button>
+
+          {/* Dropdown Content */}
+          {isDropdownOpen && (
+            <div onClick={toggleDropdown} className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
+              <ThemeToggle />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
