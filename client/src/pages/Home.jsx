@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CheckSquare, Layers, HardDrive } from 'lucide-react';
 import FeatureCard from '../components/home/FeatureCard';
 
+//static features added for more better feel
 const features = [
   {
     icon: CheckSquare,

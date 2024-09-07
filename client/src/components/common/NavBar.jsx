@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "../../assets/Logo.png";
-import { CiSettings } from "react-icons/ci";
 import { FiSun, FiMoon } from 'react-icons/fi'; // Import the moon icon
 import ThemeToggle from "../common/ThemeToggle";
 import ThemeContext from "../../context/ThemeContext";
@@ -24,10 +23,7 @@ const NavBar = () => {
 
       {/* Icon and Dropdown Section */}
       <div className="flex justify-center items-center relative">
-        {/* Settings Icon */}
-        <NavLink to="/view/settings">
-          <CiSettings className="text-2xl md:text-3xl mr-3  hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full duration-200 dark:text-white" />
-        </NavLink>
+      
 
         {/* Theme Selection Dropdown */}
         <div className="relative ">
@@ -36,8 +32,8 @@ const NavBar = () => {
             onClick={toggleDropdown}
           >
             {theme === 'light' && <FiSun className="text-xl md:text-2xl dark:text-white" />}
-            {theme === 'dark' && <FiMoon className="text-xl md:text-2xl text-yellow-400" />} {/* Moon for dark mode */}
-            {theme === 'system' && <FiSun className="text-xl md:text-2xl dark:text-white" />} {/* System default */}
+            {theme === 'dark' && <FiMoon className="text-xl md:text-2xl text-yellow-400" />} 
+            {theme === 'system' && <FiSun className="text-xl md:text-2xl dark:text-white" />} 
           </button>
 
           {/* Dropdown Content */}

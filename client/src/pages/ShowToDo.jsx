@@ -1,38 +1,91 @@
 import React, { useEffect, useState } from "react";
 import TodoItem from "../components/showTodo/TodoItem";
 import ModalBox from "../components/common/ModalBox";
+import { HiPaintBrush } from "react-icons/hi2";
 import { List } from "lucide-react";
 import ModalContent from "../components/showTodo/ModalContent";
 import { fetchTodo, saveTodo } from "../utils/persistance";
+import { v4 as uuidv4 } from "uuid";
+import Customization from "../components/showTodo/Customization";
+import {
+  DndContext,
+  closestCorners,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 const ShowToDo = () => {
+  //states
   const [todos, setTodos] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [showCustomization, setShowCustomization] = useState(false);
   const [showTodos, setShowTodos] = useState(true);
   const [fontStyle, setFontStyle] = useState("sans-serif");
-  const [fontColor, setFontColor] = useState("#333");
+  const [fontColor, setFontColor] = useState("violet");
 
-  // Fetch todos from localStorage when the component mounts
+  //sensors from dnd- drag and drop helper
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  //fetching the stored items from the local storage
   useEffect(() => {
     const storedTodos = fetchTodo();
-    if (storedTodos.length > 0) {
+    if (storedTodos && storedTodos.length > 0) {
       setTodos(storedTodos);
     }
   }, []);
 
+  //function written to onClose the opened Modal
   const onCloseModal = () => {
     setIsOpen(false);
   };
 
-  const handleMainSubmit = (newTodo) => {
+  //for submiting main tasks
+  const handleMainSubmit = (newTodoData) => {
+    const newTodo = {
+      id: uuidv4(),
+      title: newTodoData.title,
+      isCompleted: false,
+      subItems: [],
+      icon: newTodoData.icon,
+    };
+
     const updatedTodos = [...todos, newTodo];
     setTodos(updatedTodos);
     saveTodo(updatedTodos);
+    setIsOpen(false);
   };
 
   const handleToggleTodos = () => {
     setShowTodos(!showTodos);
+  };
+
+  //drag end checker / controller
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setTodos((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        const newItems = arrayMove(items, oldIndex, newIndex);
+        saveTodo(newItems);
+        return newItems;
+      });
+    }
   };
 
   return (
@@ -42,13 +95,17 @@ const ShowToDo = () => {
         <div className="flex justify-between mb-4">
           <button
             onClick={() => setShowCustomization(!showCustomization)}
-            className=" py-1 px-6 rounded-md  hover:bg-violet-500 bg-violet-400 text-white font-bold font-sans"
+            className="py-1 px- flex items-center gap-2 p-2 rounded-md hover:bg-violet-500 bg-violet-400 text-white font-bold font-sans"
           >
+            <span>
+              {" "}
+              <HiPaintBrush />
+            </span>{" "}
             Customize
           </button>
           <button
             onClick={handleToggleTodos}
-            className=" py-1 px-6 rounded-md  hover:bg-violet-500 bg-violet-400 text-white font-bold font-sans"
+            className="py-1 px-6 rounded-md hover:bg-violet-500 bg-violet-400 text-white font-bold font-sans"
           >
             {showTodos ? "Hide Todos" : "Show Todos"}
           </button>
@@ -56,59 +113,31 @@ const ShowToDo = () => {
 
         {/* Customization Section */}
         {showCustomization && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
-            <h2 className="text-xl font-bold mb-4">Customize Your Todo List</h2>
-            <div className="flex flex-col space-y-4">
-              {/* Font Style */}
-              <div>
-                <label className="block text-gray-800 dark:text-gray-200 mb-2">
-                  Font Style:
-                </label>
-                <select
-                  className="rounded-md p-2"
-                  value={fontStyle}
-                  onChange={(e) => setFontStyle(e.target.value)}
-                >
-                  <option value="sans-serif">Sans-serif</option>
-                  <option value="serif">Serif</option>
-                  <option value="monospace">Monospace</option>
-                  <option value="cursive">Cursive</option>
-                </select>
-              </div>
-
-              {/* Font Color */}
-              <div>
-                <label className="block text-gray-800 dark:text-gray-200 mb-2">
-                  Font Color:
-                </label>
-                <input
-                  type="color"
-                  className="rounded-md p-1"
-                  value={fontColor}
-                  onChange={(e) => setFontColor(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
+          <Customization
+            fontColor={fontColor}
+            fontStyle={fontStyle}
+            setFontStyle={setFontStyle}
+            setFontColor={setFontColor}
+          />
         )}
 
         <div
           className={`bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 transition-colors duration-300`}
         >
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <h1
-              className={`text-4xl font-bold flex items-center mb-8`}
+              className={`text-2xl sm:text-4xl font-bold flex items-center mb-4 sm:mb-8`}
               style={{ fontFamily: fontStyle, color: fontColor }}
             >
               <List
-                size={32}
-                className="mr-3 text-purple-600 dark:text-purple-400"
+                size={24}
+                className="mr-2 sm:mr-3 text-xs text-purple-600 dark:text-purple-400"
               />
               My Todo Lists
             </h1>
             <button
               onClick={() => setIsOpen(true)}
-              className=" py-1 px-6 m-3 rounded-md  hover:bg-violet-500 bg-violet-400 text-white font-bold"
+              className="py-1 px-4 sm:px-6 sm:py-2 rounded-md hover:bg-violet-500 bg-violet-400 text-white font-bold mt-2 sm:mt-0 mb-5"
             >
               Add Todo +
             </button>
@@ -117,16 +146,27 @@ const ShowToDo = () => {
           {/* Todo Items */}
           {showTodos && (
             <div className="space-y-6">
-              {todos?.map((item) => (
-                <TodoItem
-                  key={item?.id}
-                  todo={item}
-                  todos={todos}
-                  setTodos={setTodos}
-                  fontStyle={fontStyle} 
-                  fontColor={fontColor}
-                />
-              ))}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCorners}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={todos.map((todo) => todo.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {todos?.map((item) => (
+                    <TodoItem
+                      key={item?.id}
+                      todo={item}
+                      todos={todos}
+                      setTodos={setTodos}
+                      fontStyle={fontStyle}
+                      fontColor={fontColor}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
             </div>
           )}
         </div>
@@ -140,7 +180,7 @@ const ShowToDo = () => {
           todos={todos}
           setTodos={setTodos}
           saveTodo={saveTodo}
-          submitFun={(data) => handleMainSubmit(data)}
+          submitFun={handleMainSubmit}
         />
       </ModalBox>
     </div>

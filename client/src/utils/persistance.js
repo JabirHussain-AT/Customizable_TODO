@@ -1,11 +1,12 @@
 import toast from 'react-hot-toast';
 
+
+//function to save todo
 function saveTodo(items) {
   try {
-    localStorage.setItem("todos", JSON.stringify(items));
-    toast.success("Todos saved successfully!", {
-      icon: "✅",
-    });
+
+    localStorage.setItem("todos", JSON.stringify(items))
+
   } catch (error) {
     toast.error("Error saving todos. Please try again.", {
       icon: "❌",
@@ -14,6 +15,8 @@ function saveTodo(items) {
   }
 }
 
+
+//function to fetch the list persisted in the local storage
 function fetchTodo() {
   try {
     const storedTodos = localStorage.getItem("todos");

@@ -6,7 +6,7 @@ import { PlusCircle, AlertCircle } from "lucide-react";
 
 const ModalContent = ( { onclose  , todos , setTodos , saveTodo , submitFun }) => {
   const [todoText, setTodoText] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState("FaUsers");
+  const [selectedIcon, setSelectedIcon] = useState("VscBlank");
 
 
   const handleSubmit = async (e) => {
@@ -30,7 +30,7 @@ const ModalContent = ( { onclose  , todos , setTodos , saveTodo , submitFun }) =
       subItems: []
     };
 
-    submitFun( newTodo )
+    submitFun( newTodo  )
     
     onclose()
 
