@@ -6,6 +6,9 @@ const ModalBox = ({ isOpen, onClose, children }) => {
   return (
     <div className="fixed rounded-md inset-0 bg-black bg-opacity-30  backdrop-blur-sm flex justify-center items-center ">
       <div className="w-[600px]  bg-white rounded-md p-2 ">
+        <div className="w-full flex justify-end p-2">
+          <IoCloseCircleSharp onClick={() => onClose()} />
+        </div>
         <div className="bg-white p-2 text-black">{children}</div>
       </div>
     </div>
