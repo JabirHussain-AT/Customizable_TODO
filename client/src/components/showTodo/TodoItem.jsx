@@ -17,13 +17,10 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  DndContext,
-  closestCenter,
-} from "@dnd-kit/core";
+import { DndContext, closestCenter } from "@dnd-kit/core";
 import { saveTodo } from "../../utils/persistance";
 import { IconPickerItem } from "react-icons-picker";
-import { calculateProgress } from "../../utils/helpers";
+import { calculateProgress, getFontSizeClass } from "../../utils/helpers";
 
 const TodoItem = ({
   todo,
@@ -33,8 +30,7 @@ const TodoItem = ({
   fontStyle,
   fontColor,
 }) => {
-
-    //destructuring elements
+  //destructuring elements
   const { id, title, subItems, isCompleted, icon } = todo;
 
   //managing states
@@ -56,7 +52,6 @@ const TodoItem = ({
     setIsOpen(false);
   };
 
-
   //here we are checking the progress for showing using a utility function
   const progress = calculateProgress(subItems);
 
@@ -69,7 +64,7 @@ const TodoItem = ({
       title: data.title,
       isCompleted: false,
       subItems: [],
-      icon : data.icon
+      icon: data.icon,
     };
 
     const updatedTodos = updateTodoRecursively(todos, id, (item) => ({
@@ -81,7 +76,6 @@ const TodoItem = ({
     saveTodo(updatedTodos);
     setIsOpen(false);
   };
-
 
   //handling editing
   const handleEditTodo = () => {
@@ -96,15 +90,14 @@ const TodoItem = ({
     }
   };
 
-//   handling deleting a todo 
+  //   handling deleting a todo
   const handleDeleteTodo = () => {
     const updatedTodos = deleteTodoRecursively(todos, id);
     setTodos(updatedTodos);
     saveTodo(updatedTodos);
   };
 
-
-//   controlling todo toggle 
+  //   controlling todo toggle
   const handleToggleTodo = () => {
     const updatedTodos = updateTodoRecursively(todos, id, (item) => ({
       ...item,
@@ -114,8 +107,7 @@ const TodoItem = ({
     saveTodo(updatedTodos);
   };
 
-
-//   recusive methords for nested lists 
+  //   recusive methords for nested lists
   const updateTodoRecursively = (todoItems, targetId, updateFn) => {
     return todoItems.map((item) => {
       if (item.id === targetId) {
@@ -140,8 +132,7 @@ const TodoItem = ({
       }));
   };
 
-
-  //fixing the drop end of dnd 
+  //fixing the drop end of dnd
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
@@ -157,8 +148,7 @@ const TodoItem = ({
     saveTodo(updatedTodos);
   };
 
-
-  //move setting function 
+  //move setting function
   const moveTodo = (todoItems, activeId, overId) => {
     const activeItem = findTodoById(todoItems, activeId);
 
@@ -234,14 +224,14 @@ const TodoItem = ({
           />
           <div
             style={{ fontFamily: fontStyle, color: fontColor }}
-            className={`text-${
-              2 - depth
-            }xl font-semibold text-gray-800 dark:text-gray-20 flex items-center gap-4 `}
+            className={`font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-4 ${getFontSizeClass(
+              depth
+            )}`}
           >
             <span
               className={`${
                 isCompleted ? "line-through" : ""
-              } text-xl md:text-3xl `}
+              }  `}
             >
               {title}
             </span>{" "}

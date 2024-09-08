@@ -5,3 +5,18 @@ const calculateProgress = (items) => {
   };
 
   export  { calculateProgress }
+
+
+
+  //function to find font size
+
+  export const getFontSizeClass = (depth) => {
+    switch (depth) {
+      case 0:
+        return "text-lg md:text-2xl";
+      case 1:
+        return "text-base md:text-xl";
+      default:
+        return "text-sm md:text-lg";
+    }
+  };
