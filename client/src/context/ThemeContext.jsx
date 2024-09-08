@@ -6,7 +6,7 @@ const ThemeContext = createContext()
  export const ThemeProvaider = ( { children } ) => {
 
     //managing state for controling themes
-    const [ theme , setTheme ] = useState( localStorage.getItem('theme') || 'light' ) // if it is already selected one persisting the theme in the local storage 
+    const [ theme , setTheme ] = useState( localStorage.getItem('theme') || 'dark' ) // if it is already selected one persisting the theme in the local storage 
 
 
     useEffect(() => {

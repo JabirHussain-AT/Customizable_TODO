@@ -69,6 +69,7 @@ const TodoItem = ({
       title: data.title,
       isCompleted: false,
       subItems: [],
+      icon : data.icon
     };
 
     const updatedTodos = updateTodoRecursively(todos, id, (item) => ({
