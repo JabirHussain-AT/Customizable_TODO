@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TodoItem from "../components/showTodo/TodoItem";
 import ModalBox from "../components/common/ModalBox";
-import { HiPaintBrush } from "react-icons/hi";
+import { FaPaintBrush  } from "react-icons/fa";
 import { List } from "lucide-react";
 import ModalContent from "../components/showTodo/ModalContent";
 import { fetchTodo, saveTodo } from "../utils/persistance";
@@ -99,7 +99,7 @@ const ShowToDo = () => {
           >
             <span>
               {" "}
-              <HiPaintBrush />
+              <FaPaintBrush />
             </span>{" "}
             Customize
           </button>
